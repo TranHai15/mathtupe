@@ -2,8 +2,6 @@ import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { Question } from "../types";
 
 // --- Concurrency & Retry Logic with PRIORITY ---
-const apiKey = import.meta.env.VITE_API_KEY;
-const modelAI = import.meta.env.VITE_MODEL_AI;
 
 type QueueItem = {
   task: () => Promise<void>;
@@ -326,12 +324,14 @@ export const extractQuestionsFromImage = async (
     () =>
       retryOperation(
         async () => {
-          const ai = new GoogleGenAI({ apiKey: apiKey });
+          const ai = new GoogleGenAI({
+            apiKey: "AIzaSyAvooJYd8rVPKBc2zS95g52u2pSKg4c2Y4",
+          });
           const cleanBase64 = base64Image.split(",")[1] || base64Image;
 
           // OPTIMIZATION: Combine Extraction + Solving into ONE call
           const response = await ai.models.generateContent({
-            model: modelAI,
+            model: "gemini-2.5-flash-lite",
             contents: {
               parts: [
                 { inlineData: { mimeType: "image/jpeg", data: cleanBase64 } },
@@ -377,7 +377,9 @@ export const solveQuestionBatch = async (
   return solvingQueue.add(
     () =>
       retryOperation(async () => {
-        const ai = new GoogleGenAI({ apiKey: apiKey });
+        const ai = new GoogleGenAI({
+          apiKey: "AIzaSyAvooJYd8rVPKBc2zS95g52u2pSKg4c2Y4",
+        });
 
         const simplifiedInput = questions.map((q) => ({
           id: q.id,
@@ -396,7 +398,7 @@ export const solveQuestionBatch = async (
     `;
 
         const response = await ai.models.generateContent({
-          model: modelAI,
+          model: "gemini-2.5-flash-lite",
           contents: prompt,
           config: {
             responseMimeType: "application/json",
@@ -420,12 +422,14 @@ export const solveSpecificQuestion = async (
   return solvingQueue.add(
     () =>
       retryOperation(async () => {
-        const ai = new GoogleGenAI({ apiKey: apiKey });
+        const ai = new GoogleGenAI({
+          apiKey: "AIzaSyAvooJYd8rVPKBc2zS95g52u2pSKg4c2Y4",
+        });
         const { figure_image, ...cleanQuestion } = question;
         const strictSchema = getStrictSchemaForType(question.type);
 
         const response = await ai.models.generateContent({
-          model: modelAI,
+          model: "gemini-2.5-flash-lite",
           contents: `Giải câu này: ${JSON.stringify(cleanQuestion)}`,
           config: {
             responseMimeType: "application/json",
@@ -451,7 +455,9 @@ export const regenerateQuestionData = async (
   return solvingQueue.add(
     () =>
       retryOperation(async () => {
-        const ai = new GoogleGenAI({ apiKey: apiKey });
+        const ai = new GoogleGenAI({
+          apiKey: "AIzaSyAvooJYd8rVPKBc2zS95g52u2pSKg4c2Y4",
+        });
 
         const diffText =
           options.difficulty || question.difficulty || "Tương đương";
@@ -477,7 +483,7 @@ export const regenerateQuestionData = async (
       `;
 
         const response = await ai.models.generateContent({
-          model: modelAI,
+          model: "gemini-2.5-flash-lite",
           contents: prompt,
           config: {
             responseMimeType: "application/json",
