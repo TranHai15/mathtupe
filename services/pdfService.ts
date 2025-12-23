@@ -34,7 +34,7 @@ export const convertPdfToImages = async (file: File): Promise<string[]> => {
         viewport: viewport,
       };
 
-      await page.render(renderContext).promise;
+      await page.render(renderContext as any).promise;
 
       // Convert to JPEG for efficiency
       const base64 = canvas.toDataURL("image/jpeg", 0.8);
