@@ -1,0 +1,5 @@
+{
+  "name": "BeeMath Editor",
+  "description": "A specialized tool for math teachers to digitize exam papers from images, edit LaTeX content via AI, and export to Word.",
+  "requestFramePermissions": []
+}
